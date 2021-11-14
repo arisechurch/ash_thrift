@@ -44,7 +44,8 @@ defmodule AshThrift.MixProject do
 
   defp deps do
     [
-      {:ash, "~> 1.50"}
+      {:ash, "~> 1.50"},
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
     ]
   end
 end
