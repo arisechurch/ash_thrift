@@ -39,5 +39,6 @@ defmodule AshThrift.Transformers.Cache do
       _, acc ->
         acc
     end)
+    |> Enum.reverse()
   end
 end

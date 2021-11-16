@@ -9,6 +9,12 @@ defmodule AshThrift.Extension do
       type: :atom,
       required: true,
       doc: "The resource attribute to use for this field"
+    ],
+    optional: [
+      type: :boolean,
+      required: false,
+      default: false,
+      doc: "If true, it over-rides the attributes allow_nil?"
     ]
   ]
 

@@ -11,10 +11,11 @@ defmodule AshThrift do
   defmodule Field do
     @type t :: %__MODULE__{
             id: non_neg_integer(),
-            attribute: atom()
+            attribute: atom(),
+            optional: boolean()
           }
 
-    defstruct [:id, :attribute]
+    defstruct [:id, :attribute, :optional]
   end
 
   defmodule Struct do

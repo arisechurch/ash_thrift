@@ -5,7 +5,8 @@ defmodule AshThrift.Generator do
   alias AshThrift.Field
 
   def resource(resource) do
-    IO.inspect(Extension.get_entities(resource, []))
+    Extension.get_persisted(resource, :thrift)
+    |> Enum.map(&thrift_struct/1)
   end
 
   def namespace({language, namespace}),
@@ -13,11 +14,8 @@ defmodule AshThrift.Generator do
     namespace #{language} #{namespace}
     """
 
-  def struct(name, fields) do
-    # fields =
-    #   Extension.get_persisted(resource, :thrift_fields)
-    #   |> Enum.reverse()
-    #   |> Enum.map(&field/1)
+  def thrift_struct({name, fields}) do
+    fields = Enum.map(fields, &field/1)
 
     """
     struct #{name} {
@@ -27,7 +25,7 @@ defmodule AshThrift.Generator do
   end
 
   def field(
-        {%Field{id: id},
+        {%Field{id: id, optional: optional},
          %Attribute{
            name: name,
            type: type,
@@ -35,7 +33,7 @@ defmodule AshThrift.Generator do
          }}
       ) do
     optional_or_required =
-      if allow_nil? do
+      if optional or allow_nil? do
         "optional"
       else
         "required"
