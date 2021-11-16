@@ -17,18 +17,38 @@ defmodule AshThrift do
     defstruct [:id, :attribute]
   end
 
+  defmodule Struct do
+    @type t :: %__MODULE__{
+            name: String.t(),
+            fields: Field.t()
+          }
+
+    defstruct [:name, :fields]
+  end
+
   @doc """
   Builds an Ash resource from a thrift struct
   """
-  @spec into(struct(), resource :: struct()) :: term()
-  def into(data, resource) do
-    Ash.Dsl.Extension.get_persisted(resource.__struct__, :thrift_fields, [])
-    |> Enum.reduce(resource, fn {_field,
-                                 %Ash.Resource.Attribute{
-                                   name: name,
-                                   type: type
-                                 }},
-                                acc ->
+  @spec into(
+          data :: map(),
+          resource :: module(),
+          variant :: String.t(),
+          dest :: map()
+        ) :: term()
+  def into(data, resource, variant, dest \\ nil)
+
+  def into(data, resource, variant, nil),
+    do: into(data, resource, variant, struct(resource))
+
+  def into(data, resource, variant, dest) do
+    Ash.Dsl.Extension.get_persisted(resource, :thrift, %{})
+    |> Map.get(variant, [])
+    |> Enum.reduce(dest, fn {_field,
+                             %Ash.Resource.Attribute{
+                               name: name,
+                               type: type
+                             }},
+                            acc ->
       value = AshThrift.Conversion.parse(type, Map.get(data, name))
       Map.put(acc, name, value)
     end)
@@ -37,9 +57,10 @@ defmodule AshThrift do
   @doc """
   Dumps an Ash resource to a thrift struct
   """
-  @spec dump(resource :: struct(), thrift_struct :: struct()) :: struct()
-  def dump(resource, dest) do
-    Ash.Dsl.Extension.get_persisted(resource.__struct__, :thrift_fields, [])
+  @spec dump(resource :: struct(), variant :: String.t(), thrift_struct :: map()) :: struct()
+  def dump(resource, variant, dest \\ %{}) do
+    Ash.Dsl.Extension.get_persisted(resource.__struct__, :thrift, %{})
+    |> Map.get(variant, [])
     |> Enum.reduce(dest, fn {_field,
                              %Ash.Resource.Attribute{
                                name: name,

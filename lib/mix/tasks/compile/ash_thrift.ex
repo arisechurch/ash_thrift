@@ -13,7 +13,7 @@ defmodule Mix.Tasks.Compile.AshThrift do
 
     structs =
       resources()
-      |> Enum.map(&Generator.struct/1)
+      |> Enum.map(&Generator.resource/1)
 
     output = """
     #{namespaces}

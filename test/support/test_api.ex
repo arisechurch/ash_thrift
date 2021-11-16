@@ -21,10 +21,12 @@ defmodule TestApi do
     end
 
     thrift do
-      field(1, :id)
-      field(2, :body)
-      field(3, :created_at)
-      field(4, :updated_at)
+      thrift_struct "Parent" do
+        field(1, :id)
+        field(2, :body)
+        field(3, :created_at)
+        field(4, :updated_at)
+      end
     end
   end
 
@@ -56,13 +58,19 @@ defmodule TestApi do
     end
 
     thrift do
-      field(1, :id)
-      field(2, :count)
-      field(3, :body)
-      field(4, :active)
-      field(5, :parent)
-      field(6, :created_at)
-      field(7, :updated_at)
+      thrift_struct "TestResource" do
+        field(1, :id)
+        field(2, :count)
+        field(3, :body)
+        field(4, :active)
+        field(5, :parent)
+        field(6, :created_at)
+        field(7, :updated_at)
+      end
+
+      thrift_struct "PartialResource" do
+        field(1, :body)
+      end
     end
   end
 

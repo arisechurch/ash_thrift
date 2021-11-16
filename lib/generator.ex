@@ -4,18 +4,20 @@ defmodule AshThrift.Generator do
   alias AshThrift.Conversion
   alias AshThrift.Field
 
+  def resource(resource) do
+    IO.inspect(Extension.get_entities(resource, []))
+  end
+
   def namespace({language, namespace}),
     do: """
     namespace #{language} #{namespace}
     """
 
-  def struct(resource) do
-    name = Extension.get_opt(resource, [:thrift], :struct_name, "")
-
-    fields =
-      Extension.get_persisted(resource, :thrift_fields)
-      |> Enum.reverse()
-      |> Enum.map(&field/1)
+  def struct(name, fields) do
+    # fields =
+    #   Extension.get_persisted(resource, :thrift_fields)
+    #   |> Enum.reverse()
+    #   |> Enum.map(&field/1)
 
     """
     struct #{name} {

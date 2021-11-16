@@ -35,7 +35,7 @@ defmodule AshThriftTest do
           created_at: DateTime.to_unix(now, :microsecond),
           updated_at: DateTime.to_unix(now, :microsecond)
         }
-        |> AshThrift.into(%TestApi.Parent{})
+        |> AshThrift.into(TestApi.Parent, "Parent")
 
       assert r == %TestApi.Parent{
                id: uuid,
@@ -58,7 +58,7 @@ defmodule AshThriftTest do
           created_at: now,
           updated_at: now
         }
-        |> AshThrift.dump(%ThriftStruct{})
+        |> AshThrift.dump("Parent", %ThriftStruct{})
 
       assert r == %ThriftStruct{
                id: Ecto.UUID.dump!(uuid),
@@ -71,7 +71,7 @@ defmodule AshThriftTest do
     test "it ignores relationships" do
       test_resource = TestApi.build!(:test_resource)
 
-      assert AshThrift.dump(test_resource, %TestStruct{}) == %TestStruct{
+      assert AshThrift.dump(test_resource, "TestResource", %TestStruct{}) == %TestStruct{
                id: Ecto.UUID.dump!(test_resource.id),
                active: true,
                body: "test",
@@ -79,6 +79,11 @@ defmodule AshThriftTest do
                created_at: DateTime.to_unix(test_resource.created_at, :microsecond),
                updated_at: DateTime.to_unix(test_resource.updated_at, :microsecond)
              }
+    end
+
+    test "it correctly dumps a partial resource" do
+      test_resource = TestApi.build!(:test_resource)
+      assert AshThrift.dump(test_resource, "PartialResource") == %{body: "test"}
     end
   end
 end
