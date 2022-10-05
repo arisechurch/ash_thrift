@@ -18,7 +18,7 @@ defmodule AshThrift.Extension do
     ]
   ]
 
-  @field %Ash.Dsl.Entity{
+  @field %Spark.Dsl.Entity{
     name: :field,
     describe: "Maps a resource field to a thrift field",
     examples: [
@@ -29,7 +29,7 @@ defmodule AshThrift.Extension do
     schema: @field_schema
   }
 
-  @struct %Ash.Dsl.Entity{
+  @struct %Spark.Dsl.Entity{
     name: :thrift_struct,
     describe: "Maps fields to a thrift struct",
     examples: [
@@ -51,7 +51,7 @@ defmodule AshThrift.Extension do
     ]
   }
 
-  @thrift %Ash.Dsl.Section{
+  @thrift %Spark.Dsl.Section{
     name: :thrift,
     describe: """
     Configure the generated thrift files.
@@ -60,7 +60,7 @@ defmodule AshThrift.Extension do
     schema: []
   }
 
-  use Ash.Dsl.Extension,
+  use Spark.Dsl.Extension,
     sections: [@thrift],
     transformers: [AshThrift.Transformers.Cache]
 end

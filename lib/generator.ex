@@ -1,8 +1,8 @@
 defmodule AshThrift.Generator do
-  alias Ash.Dsl.Extension
   alias Ash.Resource.Attribute
   alias AshThrift.Conversion
   alias AshThrift.Field
+  alias Spark.Dsl.Extension
 
   def resource(resource) do
     Extension.get_persisted(resource, :thrift)

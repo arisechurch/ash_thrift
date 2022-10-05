@@ -42,7 +42,7 @@ defmodule AshThrift do
     do: into(data, resource, variant, struct(resource))
 
   def into(data, resource, variant, dest) do
-    Ash.Dsl.Extension.get_persisted(resource, :thrift, %{})
+    Spark.Dsl.Extension.get_persisted(resource, :thrift, %{})
     |> Map.get(variant, [])
     |> Enum.reduce(dest, fn {_field,
                              %Ash.Resource.Attribute{
@@ -60,7 +60,7 @@ defmodule AshThrift do
   """
   @spec dump(resource :: struct(), variant :: String.t(), thrift_struct :: map()) :: struct()
   def dump(resource, variant, dest \\ %{}) do
-    Ash.Dsl.Extension.get_persisted(resource.__struct__, :thrift, %{})
+    Spark.Dsl.Extension.get_persisted(resource.__struct__, :thrift, %{})
     |> Map.get(variant, [])
     |> Enum.reduce(dest, fn {_field,
                              %Ash.Resource.Attribute{

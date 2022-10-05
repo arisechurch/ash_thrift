@@ -1,10 +1,10 @@
 defmodule AshThrift.Transformers.Cache do
-  use Ash.Dsl.Transformer
+  use Spark.Dsl.Transformer
 
-  alias Ash.Dsl.Transformer
+  alias Spark.Dsl.Transformer
 
   @impl true
-  def transform(_resource, dsl_state) do
+  def transform(dsl_state) do
     dsl_state
     |> Transformer.persist(:thrift, structs(dsl_state))
     |> then(&{:ok, &1})

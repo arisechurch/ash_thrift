@@ -4,7 +4,7 @@ defmodule AshThrift.ExtensionTest do
   describe "metadata" do
     test "it adds the correct metadata" do
       entities =
-        Ash.Dsl.Extension.get_entities(TestApi.Parent, [
+        Spark.Dsl.Extension.get_entities(TestApi.Parent, [
           :thrift
         ])
 

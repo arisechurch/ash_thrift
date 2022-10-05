@@ -14,10 +14,7 @@ defmodule TestApi do
     end
 
     actions do
-      create :create
-      read :read
-      update :update
-      destroy :destroy
+      defaults [:create, :read, :update, :destroy]
     end
 
     thrift do
@@ -51,10 +48,7 @@ defmodule TestApi do
     end
 
     actions do
-      create :create
-      read :read
-      update :update
-      destroy :destroy
+      defaults [:create, :read, :update, :destroy]
     end
 
     thrift do
@@ -108,7 +102,7 @@ defmodule TestApi do
       body: "test",
       active: true
     })
-    |> Ash.Changeset.replace_relationship(:parent, parent)
+    |> Ash.Changeset.manage_relationship(:parent, parent, type: :append_and_remove)
     |> Api.create!()
   end
 end
