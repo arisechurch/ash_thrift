@@ -66,6 +66,12 @@ defmodule AshThrift.ConversionTest do
       type_output: "binary",
       input: <<1, 2, 3>>,
       output: <<1, 2, 3>>
+    },
+    %{
+      type: {:array, Ash.Type.String},
+      type_output: "list<string>",
+      input: ["hello"],
+      output: ["hello"]
     }
   ]
 
@@ -73,15 +79,20 @@ defmodule AshThrift.ConversionTest do
     escaped_input = Macro.escape(input)
     escaped_output = Macro.escape(output)
 
-    test "type #{type}" do
+    type_name = case type do
+      {:array, t} -> "list of #{t}"
+      t -> t
+    end
+
+    test "type #{type_name}" do
       assert Conversion.type(unquote(type)) == unquote(type_output)
     end
 
-    test "value #{type}" do
+    test "value #{type_name}" do
       assert Conversion.value(unquote(type), unquote(escaped_input)) == unquote(escaped_output)
     end
 
-    test "parse #{type}" do
+    test "parse #{type_name}" do
       assert Conversion.parse(unquote(type), unquote(escaped_output)) == unquote(escaped_input)
     end
   end

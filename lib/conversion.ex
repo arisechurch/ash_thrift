@@ -10,7 +10,8 @@ defmodule AshThrift.Conversion do
   def type(Ash.Type.Boolean), do: "bool"
   def type(Ash.Type.UUID), do: "binary"
   def type(Ash.Type.Binary), do: "binary"
-  def type(_), do: raise("unsupported type")
+  def type({:array, t}), do: "list<#{type(t)}>"
+  def type(type), do: raise("unsupported type #{type}")
 
   @spec value(atom(), any()) :: any()
   def value(type, value)
@@ -24,7 +25,8 @@ defmodule AshThrift.Conversion do
   def value(Ash.Type.Boolean, v), do: v
   def value(Ash.Type.UUID, v), do: Ecto.UUID.dump!(v)
   def value(Ash.Type.Binary, v), do: v
-  def value(_, _), do: raise("unsupported type")
+  def value({:array, t}, v), do: Enum.map(v, &value(t, &1))
+  def value(type, _), do: raise("unsupported type, #{type}")
 
   @spec parse(atom(), any()) :: any()
   def parse(type, thrift_value)
@@ -38,5 +40,6 @@ defmodule AshThrift.Conversion do
   def parse(Ash.Type.Boolean, v), do: v
   def parse(Ash.Type.UUID, v), do: Ecto.UUID.cast!(v)
   def parse(Ash.Type.Binary, v), do: v
-  def parse(_, _), do: raise("unsupported type")
+  def parse({:array, t}, v), do: Enum.map(v, &parse(t, &1))
+  def parse(type, _), do: raise("unsupported type #{type}")
 end
