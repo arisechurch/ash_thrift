@@ -4,7 +4,7 @@ defmodule AshThrift.MixProject do
   def project do
     [
       app: :ash_thrift,
-      version: "0.2.0-rc.2",
+      version: "0.2.0-rc.3",
       elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env()),
       package: package(),

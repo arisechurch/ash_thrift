@@ -34,8 +34,9 @@ defmodule AshThrift do
           data :: map(),
           resource :: module(),
           variant :: String.t(),
-          dest :: map()
-        ) :: term()
+          dest :: resource_t | nil
+        ) :: resource_t
+        when resource_t: term()
   def into(data, resource, variant, dest \\ nil)
 
   def into(data, resource, variant, nil),
@@ -58,7 +59,8 @@ defmodule AshThrift do
   @doc """
   Dumps an Ash resource to a thrift struct
   """
-  @spec dump(resource :: struct(), variant :: String.t(), thrift_struct :: map()) :: struct()
+  @spec dump(resource :: resource_t, variant :: String.t(), thrift_struct :: map()) :: resource_t
+        when resource_t: struct()
   def dump(resource, variant, dest \\ %{}) do
     Spark.Dsl.Extension.get_persisted(resource.__struct__, :thrift, %{})
     |> Map.get(variant, [])
