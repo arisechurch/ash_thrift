@@ -4,7 +4,7 @@ defmodule AshThrift.MixProject do
   def project do
     [
       app: :ash_thrift,
-      version: "0.2.0-rc.3",
+      version: "0.2.0-rc.4",
       elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env()),
       package: package(),
@@ -15,7 +15,7 @@ defmodule AshThrift.MixProject do
       ash_thrift: [
         namespaces: [
           elixir: "TestApi.V0",
-          rb: "TestApi.V0",
+          rb: "TestApi.V0"
         ],
         resources: [
           TestApi.Parent,
