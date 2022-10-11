@@ -1,5 +1,5 @@
 defmodule AshThrift.Conversion do
-  @spec type(atom()) :: String.t()
+  @spec type(term()) :: String.t()
   def type(type)
   def type(Ash.Type.Atom), do: "string"
   def type(Ash.Type.String), do: "string"
@@ -10,10 +10,11 @@ defmodule AshThrift.Conversion do
   def type(Ash.Type.Boolean), do: "bool"
   def type(Ash.Type.UUID), do: "binary"
   def type(Ash.Type.Binary), do: "binary"
+  def type({:relationship, variant}), do: variant
   def type({:array, t}), do: "list<#{type(t)}>"
   def type(type), do: raise("unsupported type #{type}")
 
-  @spec value(atom(), any()) :: any()
+  @spec value(term(), any()) :: any()
   def value(type, value)
   def value(_, nil), do: nil
   def value(Ash.Type.Atom, v), do: Atom.to_string(v)

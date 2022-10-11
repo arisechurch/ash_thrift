@@ -32,14 +32,67 @@ defmodule AshThrift.Generator do
            allow_nil?: allow_nil?
          }}
       ) do
+    optional =
+      case optional do
+        nil -> allow_nil?
+        bool -> bool
+      end
+
     optional_or_required =
-      if optional or allow_nil? do
+      if optional do
         "optional"
       else
         "required"
       end
 
     thrift_type = Conversion.type(type)
+
+    thrift_name = name(name)
+
+    """
+    #{id}: #{optional_or_required} #{thrift_type} #{thrift_name};
+    """
+  end
+
+  # relationships
+  def field(
+        {%Field{id: id, optional: optional, variant: variant},
+         %{
+           name: name,
+           destination: destination,
+           cardinality: cardinality
+         }}
+      ) do
+    optional =
+      case optional do
+        nil -> true
+        bool -> bool
+      end
+
+    optional_or_required =
+      if optional do
+        "optional"
+      else
+        "required"
+      end
+
+    variant =
+      case variant do
+        nil ->
+          Spark.Dsl.Extension.get_persisted(destination, :thrift, %{})
+          |> Map.keys()
+          |> List.first()
+
+        v ->
+          v
+      end
+
+    thrift_type =
+      case cardinality do
+        :one -> {:relationship, variant}
+        _ -> {:array, {:relationship, variant}}
+      end
+      |> Conversion.type()
 
     thrift_name = name(name)
 

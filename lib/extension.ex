@@ -13,8 +13,12 @@ defmodule AshThrift.Extension do
     optional: [
       type: :boolean,
       required: false,
-      default: false,
       doc: "If true, it over-rides the attributes allow_nil?"
+    ],
+    variant: [
+      type: :string,
+      required: false,
+      doc: "For relationships, specify the thrift struct to use"
     ]
   ]
 
@@ -51,12 +55,33 @@ defmodule AshThrift.Extension do
     ]
   }
 
+  @namespace %Spark.Dsl.Entity{
+    name: :namespace,
+    describe: "Module namespace for the generated structs",
+    examples: [
+      """
+      thrift do
+        namespace MyApi.V0
+      end
+      """
+    ],
+    target: AshThrift.DslNamespace,
+    args: [:module],
+    schema: [
+      module: [
+        type: :atom,
+        doc: "Set the namespace module",
+        required: true
+      ]
+    ]
+  }
+
   @thrift %Spark.Dsl.Section{
     name: :thrift,
     describe: """
     Configure the generated thrift files.
     """,
-    entities: [@struct],
+    entities: [@namespace, @struct],
     schema: []
   }
 

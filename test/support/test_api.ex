@@ -17,12 +17,19 @@ defmodule TestApi do
       defaults [:create, :read, :update, :destroy]
     end
 
+    relationships do
+      has_many :children, TestApi.TestResource
+    end
+
     thrift do
+      namespace(TestApi.V0)
+
       thrift_struct "Parent" do
         field(1, :id)
         field(2, :body)
-        field(3, :created_at)
-        field(4, :updated_at)
+        field(3, :children, variant: "TestResource")
+        field(4, :created_at)
+        field(5, :updated_at)
       end
     end
   end
@@ -52,6 +59,8 @@ defmodule TestApi do
     end
 
     thrift do
+      namespace(TestApi.V0)
+
       thrift_struct "TestResource" do
         field(1, :id)
         field(2, :count)

@@ -14,13 +14,18 @@ defmodule AshThrift.MixProject do
       test_paths: ["lib"],
       ash_thrift: [
         namespaces: [
+          elixir: "TestApi.V0",
           rb: "TestApi.V0",
-          ex: "TestApi.V0"
         ],
         resources: [
           TestApi.Parent,
           TestApi.TestResource
-        ]
+        ],
+        output_file: "test/support/api.thrift"
+      ],
+      thrift: [
+        files: ["test/support/api.thrift"],
+        output_path: "test/support"
       ]
     ]
   end
@@ -45,7 +50,8 @@ defmodule AshThrift.MixProject do
   defp deps do
     [
       {:ash, "~> 2.0.0-rc.1"},
-      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
+      {:thrift, github: "pinterest/elixir-thrift", only: :test, runtime: false}
     ]
   end
 end

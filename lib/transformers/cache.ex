@@ -18,6 +18,10 @@ defmodule AshThrift.Transformers.Cache do
       Transformer.get_entities(dsl, [:attributes])
       |> Enum.reduce(%{}, fn a, acc -> Map.put(acc, a.name, a) end)
 
+    attributes =
+      Transformer.get_entities(dsl, [:relationships])
+      |> Enum.reduce(attributes, fn a, acc -> Map.put(acc, a.name, a) end)
+
     Transformer.get_entities(dsl, [:thrift])
     |> Enum.reduce(%{}, fn
       %AshThrift.Struct{name: name, fields: fields}, acc ->

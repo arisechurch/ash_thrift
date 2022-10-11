@@ -1,35 +1,13 @@
 defmodule AshThriftTest do
   use ExUnit.Case, async: true
 
-  defmodule ThriftStruct do
-    defstruct [
-      :id,
-      :body,
-      :parent,
-      :created_at,
-      :updated_at
-    ]
-  end
-
-  defmodule TestStruct do
-    defstruct [
-      :id,
-      :count,
-      :body,
-      :active,
-      :parent,
-      :created_at,
-      :updated_at
-    ]
-  end
-
   describe "into" do
     test "it correctly builds a resource from a struct" do
       uuid = Ecto.UUID.generate()
       now = DateTime.utc_now()
 
       r =
-        %ThriftStruct{
+        %TestApi.V0.Parent{
           id: Ecto.UUID.dump!(uuid),
           body: "content",
           created_at: DateTime.to_unix(now, :microsecond),
@@ -37,12 +15,12 @@ defmodule AshThriftTest do
         }
         |> AshThrift.into(TestApi.Parent, "Parent")
 
-      assert r == %TestApi.Parent{
+      assert %TestApi.Parent{
                id: uuid,
                body: "content",
                created_at: now,
                updated_at: now
-             }
+             } = r
     end
   end
 
@@ -58,9 +36,9 @@ defmodule AshThriftTest do
           created_at: now,
           updated_at: now
         }
-        |> AshThrift.dump("Parent", %ThriftStruct{})
+        |> AshThrift.dump("Parent")
 
-      assert r == %ThriftStruct{
+      assert r == %TestApi.V0.Parent{
                id: Ecto.UUID.dump!(uuid),
                body: "content",
                created_at: DateTime.to_unix(now, :microsecond),
@@ -68,14 +46,21 @@ defmodule AshThriftTest do
              }
     end
 
-    test "it ignores relationships" do
+    test "it dumps relationships" do
       test_resource = TestApi.build!(:test_resource)
 
-      assert AshThrift.dump(test_resource, "TestResource", %TestStruct{}) == %TestStruct{
+      assert AshThrift.dump(test_resource, "TestResource") == %TestApi.V0.TestResource{
                id: Ecto.UUID.dump!(test_resource.id),
                active: true,
                body: "test",
                count: nil,
+               parent: %TestApi.V0.Parent{
+                 id: Ecto.UUID.dump!(test_resource.parent.id),
+                 body: "content",
+                 children: nil,
+                 created_at: DateTime.to_unix(test_resource.parent.created_at, :microsecond),
+                 updated_at: DateTime.to_unix(test_resource.parent.updated_at, :microsecond)
+               },
                created_at: DateTime.to_unix(test_resource.created_at, :microsecond),
                updated_at: DateTime.to_unix(test_resource.updated_at, :microsecond)
              }
@@ -83,7 +68,10 @@ defmodule AshThriftTest do
 
     test "it correctly dumps a partial resource" do
       test_resource = TestApi.build!(:test_resource)
-      assert AshThrift.dump(test_resource, "PartialResource") == %{body: "test"}
+
+      assert AshThrift.dump(test_resource, "PartialResource") == %TestApi.V0.PartialResource{
+               body: "test"
+             }
     end
   end
 end
