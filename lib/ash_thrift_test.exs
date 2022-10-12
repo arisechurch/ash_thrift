@@ -10,6 +10,11 @@ defmodule AshThriftTest do
         %TestApi.V0.Parent{
           id: Ecto.UUID.dump!(uuid),
           body: "content",
+          children: [
+            %TestApi.V0.TestResource{
+              body: "body"
+            }
+          ],
           created_at: DateTime.to_unix(now, :microsecond),
           updated_at: DateTime.to_unix(now, :microsecond)
         }
@@ -18,6 +23,42 @@ defmodule AshThriftTest do
       assert %TestApi.Parent{
                id: uuid,
                body: "content",
+               children: [
+                 %TestApi.TestResource{
+                   body: "body"
+                 }
+               ],
+               created_at: now,
+               updated_at: now
+             } = r
+    end
+
+    test "a map also affects relationships" do
+      uuid = Ecto.UUID.generate()
+      now = DateTime.utc_now()
+
+      r =
+        %TestApi.V0.Parent{
+          id: Ecto.UUID.dump!(uuid),
+          body: "content",
+          children: [
+            %TestApi.V0.TestResource{
+              body: "body"
+            }
+          ],
+          created_at: DateTime.to_unix(now, :microsecond),
+          updated_at: DateTime.to_unix(now, :microsecond)
+        }
+        |> AshThrift.into(TestApi.Parent, "Parent", %{})
+
+      assert %{
+               id: uuid,
+               body: "content",
+               children: [
+                 %{
+                   body: "body"
+                 }
+               ],
                created_at: now,
                updated_at: now
              } = r

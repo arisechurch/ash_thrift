@@ -56,6 +56,11 @@ defmodule AshThrift do
     do: into(data, resource, variant, struct(resource))
 
   def into(data, resource, variant, dest) do
+    nil_or_map = case Map.has_key?(dest, :__struct__) do
+      true -> nil
+      _ -> %{}
+    end
+
     Spark.Dsl.Extension.get_persisted(resource, :thrift, %{})
     |> Map.get(variant, [])
     |> Enum.reduce(dest, fn
@@ -81,11 +86,11 @@ defmodule AshThrift do
               nil
 
             {data, :one} ->
-              into(data, destination, variant)
+              into(data, destination, variant, nil_or_map)
 
             {data, :many} ->
               data
-              |> Enum.map(&into(&1, destination, variant))
+              |> Enum.map(&into(&1, destination, variant, nil_or_map))
           end
 
         Map.put(acc, name, value)
