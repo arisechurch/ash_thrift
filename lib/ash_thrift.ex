@@ -174,11 +174,10 @@ defmodule AshThrift do
   def variant_module(resource, variant) do
     namespace =
       Spark.Dsl.Extension.get_entities(resource, [:thrift])
-      |> Enum.filter(fn
+      |> Enum.find(fn
         %DslNamespace{} -> true
         _ -> false
       end)
-      |> List.first()
 
     case namespace do
       nil ->
